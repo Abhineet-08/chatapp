@@ -38,9 +38,11 @@ class _AuthScreenState extends State<AuthScreen> {
     _form.currentState!.save();
 
     try {
-      setState(() {
-        _isAuthenticating = true;
-      });
+      if (mounted) {
+        setState(() {
+          _isAuthenticating = true;
+        });
+      }
 
       if (_isLogin) {
         // Login
@@ -68,19 +70,23 @@ class _AuthScreenState extends State<AuthScreen> {
         print("User data saved to Firestore successfully!");
       }
     } on FirebaseAuthException catch (error) {
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.message ?? 'Authentication failed.'),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.message ?? 'Authentication failed.'),
+          ),
+        );
+      }
       print("FirebaseAuthException: ${error.message}");
     } catch (e) {
       print("Error: $e");
     } finally {
-      setState(() {
-        _isAuthenticating = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isAuthenticating = false;
+        });
+      }
     }
   }
 
@@ -178,9 +184,11 @@ class _AuthScreenState extends State<AuthScreen> {
                           if (!_isAuthenticating)
                             TextButton(
                               onPressed: () {
-                                setState(() {
-                                  _isLogin = !_isLogin;
-                                });
+                                if (mounted) {
+                                  setState(() {
+                                    _isLogin = !_isLogin;
+                                  });
+                                }
                               },
                               child: Text(_isLogin
                                   ? 'Create an account'
